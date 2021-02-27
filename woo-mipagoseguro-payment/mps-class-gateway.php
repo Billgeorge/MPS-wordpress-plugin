@@ -172,6 +172,13 @@ class MPS_Gateway extends WC_Payment_Gateway
                     foreach ( $items as $item ) {
                         $productsName = $productsName . ' ' .  $item->get_name();
                     }
+
+                    $message = get_woocommerce_currency() . '+' . $productsName . '+' . 
+                    $order->get_billing_email() . '+' . $order->get_billing_first_name() . '+' . $order->get_billing_last_name() . '+' . 
+                    $this->get_option('mps_customerid') . '+' . $order->get_billing_phone() . '+' . $order_id . '+' . 
+                    'true' . '+' . $order->get_total() . '+' . $this->get_option('mps_publickey');
+
+                    $signature = base64_encode (hash_hmac ('sha256', $message, $this->get_option('mps_publickey'), true));
                     $body = [
                         'orderId'=>$order_id,
                         'total'=>$order->get_total(),                        
@@ -181,8 +188,9 @@ class MPS_Gateway extends WC_Payment_Gateway
                         'numberContact'=>$order->get_billing_phone(),
                         'email'=>$order->get_billing_email(),
                         'currency'=>get_woocommerce_currency(),
-                        'merchantId'=>'c09742aa-e9aa-4e4b-b890-881fa386be18',
-                        'description'=>$productsName
+                        'merchantId'=>$this->get_option('mps_customerid'),
+                        'description'=>$productsName,
+                        'signature'=> $signature
                     ];
                      
                     $body = wp_json_encode( $body );
