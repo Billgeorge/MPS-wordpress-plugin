@@ -145,7 +145,7 @@ class MPS_Gateway extends WC_Payment_Gateway
                     'body'        => $bodyToken,
                     'headers'     => [
                         'Content-Type' => 'application/x-www-form-urlencoded',
-                        'Authorization' =>'Basic ' . base64_encode( $this->get_option('mps_publickey') . ':' . $this->get_option('mps_secretkey') )
+                        'Authorization' =>'Basic ' . base64_encode( $this->get_option('mps_customerid') . ':' . $this->get_option('mps_secretkey') )
                     
                     ],
                     'timeout'     => 60,
